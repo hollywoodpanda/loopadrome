@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "core/entity.h"
 #include "core/component.h"
@@ -21,13 +22,16 @@ int main(int argc, char const *argv[])
 
     printo("[DEBUG] Criou a entity");
 
-    struct HealthComponent health_component;
+    struct HealthComponent *health_component = malloc(sizeof(struct HealthComponent));
 
-    health_component.health = 10;
+    health_component->health = 10;
 
     printo("[DEBUG] Criou o health_component");
 
-    Component *component = create_component("Health", &health_component);
+    Component *component = create_component("Health", health_component);
+
+    entity->id = 1;
+    health_component->health = 1;
 
     printo("[DEBUG] Criou o component");
 
@@ -38,6 +42,7 @@ int main(int argc, char const *argv[])
     printo("[DEBUG] Printou o entity e o health_component");
 
     free_component(component);
+    free_entity(entity);
 
     return 0;
 }

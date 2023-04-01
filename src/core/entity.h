@@ -7,4 +7,6 @@ typedef struct Entity {
 
 Entity *create_entity (int id);
 
+void free_entity (Entity *entity);
+
 #endif
