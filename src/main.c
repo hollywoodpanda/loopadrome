@@ -7,10 +7,6 @@
 #include "opengl/window.h"
 #include "opengl/error.h"
 
-typedef struct HealthComponent {
-    int health;
-} HealthComponent;
-
 void window_test ()
 {
     start_default_error_callback();
