@@ -18,7 +18,7 @@ void start_hints ()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-int open_window (
+int gl_open_window (
     char* window_title,
     int window_width,
     int window_height
