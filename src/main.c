@@ -4,45 +4,28 @@
 #include "core/entity.h"
 #include "core/component.h"
 
+#include "opengl/window.h"
+#include "opengl/error.h"
+
 typedef struct HealthComponent {
     int health;
 } HealthComponent;
 
-void printo (char *str)
+void window_test ()
 {
-
-    printf("%s\r\n", str);    
-
+    start_default_error_callback();
+    open_window(
+        "Loopadrome",
+        1024,
+        768
+    );    
 }
 
 int main(int argc, char const *argv[])
 {
 
-    Entity *entity = create_entity(2);
+    printf("[Loopadrome][Main] argc %d\r\n", argc);
+    printf("[Loopadrome][Main] argv %s\r\n", argv[0]);
 
-    printo("[DEBUG] Criou a entity");
-
-    struct HealthComponent *health_component = malloc(sizeof(struct HealthComponent));
-
-    health_component->health = 10;
-
-    printo("[DEBUG] Criou o health_component");
-
-    Component *component = create_component("Health", health_component);
-
-    entity->id = 1;
-    health_component->health = 1;
-
-    printo("[DEBUG] Criou o component");
-
-    HealthComponent *extracted_health = (HealthComponent *) component->data;
-
-    printf("[DEBUG] Entity %d with health %d (%s)\r\n", entity->id, extracted_health->health, component->name);
-
-    printo("[DEBUG] Printou o entity e o health_component");
-
-    free_component(component);
-    free_entity(entity);
-
-    return 0;
+    window_test();
 }
