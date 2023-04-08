@@ -23,9 +23,9 @@ void print_system_fn (float delta_time)
 
 void system_test ()
 {
-    System *system = ecs_create_system(&print_system_fn);
+    System *system = ecs_create_system("DefaultSystem", &print_system_fn);
 
-    system->execute(4.20f);
+    system->update(4.20f);
 
     ecs_free_system(system);
 }

@@ -1,11 +1,14 @@
 #include <stdlib.h>
 
 #include "./system.h"
+#include "../constants.h"
 
-System *ecs_create_system (ecs_system_function execute)
+System *ecs_create_system (char *name, ecs_update_system_function update)
 {
     System *system = malloc(sizeof(System));
-    system->execute = execute;
+    system->name = name;
+    system->is_active = TRUE;
+    system->update = update;
     return system;
 }
 
