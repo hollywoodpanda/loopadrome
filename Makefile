@@ -19,7 +19,7 @@ ifeq ($(OS),Windows_NT)
 else ifeq ($(shell uname -s),Darwin)
     LINKER_FLAGS = -lglfw3 -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 else
-    LINKER_FLAGS = -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi
+    LINKER_FLAGS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi
 endif
 
 

@@ -6,6 +6,10 @@ A looper in C, using [ECS](https://en.wikipedia.org/wiki/Entity_component_system
 
 ### For MacOS and Linux
 
+First you need to install [**GLFW**](https://www.glfw.org/docs/3.3/compile.html).
+
+There are easier ways depending of your OS os distro.
+
 ```shell
 $> make
 $> ./output/loopadrome
@@ -18,4 +22,4 @@ $> make
 $> ./output/loopadrome.exe
 ```
 
-... or something. I don't have a Windows machine to test on 😰. 
+... or something. Not tested on Windows yet.
