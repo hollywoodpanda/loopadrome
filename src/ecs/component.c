@@ -15,7 +15,7 @@ void ecs_free_component (Component *component)
 {
     // Freeing the data is the responsability
     // of the user of the library, not the library itself.
-    // We don't know the type of the data or if it is a freeable at all.
+    // We don't know the type of the data or if it is freeable at all.
 
     // free(component->data); //Causing "pointer being freed was not allocated"
     

@@ -8,6 +8,19 @@
 #include "ecs/entity.h"
 #include "ecs/component.h"
 
+#include "game/avl_tree.h"
+
+void print_system_fn (float delta_time)
+{
+    printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
+}
+
+void print_delta_and_message (float delta_time, char *message)
+{
+    printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
+    printf("[Loopadrome][System] Message is %s\r\n", message);
+}
+
 void window_test ()
 {
     gl_start_default_error_callback();
@@ -18,9 +31,21 @@ void window_test ()
     );
 }
 
-void print_system_fn (float delta_time)
+void avl_tree_test ()
 {
-    printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
+
+    Node *root = create_node(1);
+
+    Node *first_child = insert(2, root);
+
+    Node *second_child = insert(3, root);
+
+    Node *third_child = insert(4, first_child);
+
+    printf("[Loopadrome][AVL_TREE] root (%d) %d\r\n", root->key, get_height(root));
+
+    destroy_tree(root);
+
 }
 
 void component_test ()
@@ -44,11 +69,17 @@ void entity_test ()
 
 void system_test ()
 {
-    System *system = ecs_create_system(&print_system_fn);
+    System *system = ecs_create_system(&print_delta_and_message);
 
-    system->execute(4.20f);
+    system->execute(4.20f, "Hello ECS World!");
 
     ecs_free_system(system);
+
+    System *simpler_system = ecs_create_system(&print_system_fn);
+
+    simpler_system->execute(5.2f);
+
+    ecs_free_system(simpler_system);
 }
 
 int main(int argc, char const *argv[])
@@ -57,9 +88,12 @@ int main(int argc, char const *argv[])
     printf("[Loopadrome][Main] argc %d\r\n", argc);
     printf("[Loopadrome][Main] argv %s\r\n", argv[0]);
 
-    //window_test();
     system_test();
     entity_test();
     component_test();
+
+    avl_tree_test();
+
+    window_test();
 
 }

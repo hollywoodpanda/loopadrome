@@ -3,7 +3,7 @@
 
 #include "./entity.h"
 
-typedef void (*ecs_system_function)(float delta_time);
+typedef void (*ecs_system_function)(float delta_time, ...);
 
 typedef struct System {
     ecs_system_function execute;
