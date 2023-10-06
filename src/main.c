@@ -8,6 +8,8 @@
 #include "ecs/entity.h"
 #include "ecs/component.h"
 
+#include "./constants.h"
+
 #include "game/avl_tree.h"
 
 void print_system_fn (float delta_time)
@@ -15,14 +17,12 @@ void print_system_fn (float delta_time)
     printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
 }
 
-void print_delta_and_message (float delta_time, char *message)
-{
+void print_delta_and_message (float delta_time, char *message) {
     printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
     printf("[Loopadrome][System] Message is %s\r\n", message);
 }
 
-void window_test ()
-{
+void window_test () {
     gl_start_default_error_callback();
     gl_open_window(
         "Loopadrome",
@@ -31,26 +31,52 @@ void window_test ()
     );
 }
 
-void avl_tree_test ()
-{
+int avl_tree_compare (int value_a, int value_b) {
+    if (value_a < value_b) {
+        return -1;
+    } else if (value_a > value_b) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
-    Node *root = create_node(1);
+void avl_tree_test () {
 
-    Node *first_child = insert(2, root);
+    avl_node *root = create_node(5);
 
-    Node *second_child = insert(3, root);
+    root = insert(2, root, avl_tree_compare);
 
-    Node *third_child = insert(4, first_child);
+    root = insert(6, root, avl_tree_compare);
 
-    printf("[Loopadrome][AVL_TREE] root (%d) %d\r\n", root->key, get_height(root));
+    root = insert(4, root, avl_tree_compare);
+
+    root = insert(1, root, avl_tree_compare);
+
+    root = insert(3, root, avl_tree_compare);
+
+    
+
+    printf("[Loopadrome][AVL_TREE_TEST] root is %p with height %d\r\n", root->key, get_height(root));
+
+    pre_order(root, NODE_TYPE_ROOT);
+
+    printf("\r\n");
+
+    root = delete(6, root, avl_tree_compare);
+
+    printf("[Loopadrome][AVL_TREE_TEST] Without 6, root is %p with height %d\r\n", root->key, get_height(root));
+
+    pre_order(root, NODE_TYPE_ROOT);
+
+    printf("\r\n");
 
     destroy_tree(root);
 
 }
 
-void component_test ()
-{
-    Component *component = ecs_create_component("Cool Component", "Value");
+void component_test () {
+    ecs_component *component = ecs_create_component("Cool Component", "Value");
 
     printf("[Loopadrome][Component] Component name is %s\r\n", component->name);
     printf("[Loopadrome][Component] Component data is %s\r\n", (char*) component->data);
@@ -58,32 +84,29 @@ void component_test ()
     ecs_free_component(component);
 }
 
-void entity_test ()
-{
-    Entity *entity = ecs_create_entity(1);
+void entity_test () {
+    ecs_entity *entity = ecs_create_entity(1);
 
     printf("[Loopadrome][Entity] Entity id is %d\r\n", entity->id);
 
     ecs_free_entity(entity);
 }
 
-void system_test ()
-{
-    System *system = ecs_create_system(&print_delta_and_message);
+void system_test () {
+    ecs_system *system = ecs_create_system(&print_delta_and_message);
 
     system->execute(4.20f, "Hello ECS World!");
 
     ecs_free_system(system);
 
-    System *simpler_system = ecs_create_system(&print_system_fn);
+    ecs_system *simpler_system = ecs_create_system(&print_system_fn);
 
     simpler_system->execute(5.2f);
 
     ecs_free_system(simpler_system);
 }
 
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
 
     printf("[Loopadrome][Main] argc %d\r\n", argc);
     printf("[Loopadrome][Main] argv %s\r\n", argv[0]);

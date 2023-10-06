@@ -2,23 +2,36 @@
 #include <stdlib.h>
 
 #include "./avl_tree.h"
+#include "../constants.h"
 
-int get_height (Node *node)
+int get_height (avl_node *node)
 {
     
+    int left_height, right_height;
+
     if (node == NULL) {
         return 0;
     }
 
-    return node->height;
+    if (node->left == NULL) {
+        left_height = 0;
+    } else {
+        left_height = node->left->height + 1;
+    }
 
+    if (node->right == NULL) {
+        right_height = 0;
+    } else {
+        right_height = node->right->height + 1;
+    }
+
+    return max(left_height, right_height);
 
 }
 
-Node *create_node (int key)
-{
+avl_node *create_node (void *key) {
     
-    Node *node = (Node*) malloc(sizeof(Node));
+    avl_node *node = (avl_node*) malloc(sizeof(avl_node));
 
     node->key = key;
     node->left = NULL;
@@ -36,7 +49,7 @@ int max (int some_depth, int other_depth)
 
 }
 
-int get_balance (Node *node)
+int get_balance (avl_node *node)
 {
     
     if (node == NULL) {
@@ -47,11 +60,11 @@ int get_balance (Node *node)
 
 }
 
-Node *right_rotate (Node *node)
+avl_node *right_rotate (avl_node *node)
 {
     
-    Node *left_child = node->left;
-    Node *T2 = left_child->right;
+    avl_node *left_child = node->left;
+    avl_node *T2 = left_child->right;
 
     left_child->right = node;
     node->left = T2;
@@ -63,11 +76,11 @@ Node *right_rotate (Node *node)
 
 }
 
-Node *left_rotate (Node *node)
+avl_node *left_rotate (avl_node *node)
 {
     
-    Node *right_child = node->right;
-    Node *T2 = right_child->left;
+    avl_node *right_child = node->right;
+    avl_node *T2 = right_child->left;
 
     right_child->left = node;
     node->right = T2;
@@ -79,66 +92,160 @@ Node *left_rotate (Node *node)
     
 }
 
-Node *insert (int key, Node *node)
-{
-    
-    if (node == NULL) {
+avl_node *insert (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b)) {
+
+    if (root == NULL) {
         return create_node(key);
     }
-
-    if (key < node->key) {
-        node->left = insert(key, node->left);
-    } else if (key > node->key) {
-       node->right = insert(key, node->right);
-    }
-
-    node->height = max(get_height(node->left), get_height(node->right)) + 1;
-
-    int balance_factor = get_balance(node);
-
-    // Left - Left
-    if (balance_factor > 1 && key < node->left->key) {
-        return right_rotate(node);
-    }
-
-    // Right - Right
-    if (balance_factor < -1 && key > node->right->key) {
-        return left_rotate(node);
-    }
-
-    // Left - Right
-    if (balance_factor > 1 && key > node->left->key) {
-        node->left = left_rotate(node->left);
-        return right_rotate(node);
-    }
-
-    // Right - Left
-    if (balance_factor < -1 && key < node->right->key) {
-        node->right = right_rotate(node->right);
-        return left_rotate(node);
-    }
-
-    return node;
-
-}
-
-void pre_order (Node *root_node)
-{
     
-    if (root_node != NULL) {
-        pre_order(root_node->left);
-        pre_order(root_node->right);
-    }    
+    if (compare_fn(key, root->key) == -1) {
+        root->left = insert(key, root->left, compare_fn);
+    } else if (compare_fn(key, root->key) == 1) {
+        root->right = insert(key, root->right, compare_fn);
+    } else {
+        return root;
+    }
+
+    root->height = 1 + max(get_height(root->left), get_height(root->right));
+    
+    int balance = get_balance(root);
+
+    if (balance > 1 && compare_fn(key, root->left->key) == -1) {
+        return right_rotate(root);
+    }
+
+    if (balance < -1 && compare_fn(key, root->right->key) == 1) {
+        return left_rotate(root);
+    }
+
+    if (balance > 1 && compare_fn(key, root->left->key) == 1) {
+        root->left = left_rotate(root->left);
+        return right_rotate(root);
+    }
+
+    if (balance < -1 && compare_fn(key, root->right->key) == -1) {
+        root->right = right_rotate(root->right);
+        return left_rotate(root);
+    }
+
+    return root;
 
 }
 
-void destroy_tree (Node *root_node)
+avl_node *delete (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b)) {
+
+    avl_node *temp = NULL;
+
+    if (root == NULL) {
+        return NULL;
+    }
+
+    if (compare_fn(key, root->key) == 1) {
+
+        root->right = delete(key, root->right, compare_fn);
+
+        if (get_balance(root) == 2) {
+
+            if (get_balance(root->left) >= 0) {
+                root = right_rotate(root);
+            } else {
+                root->left = left_rotate(root->left);
+                root = right_rotate(root);
+            }
+
+        }
+
+    } else if (compare_fn(key, root->key) == -1) {
+
+        if (get_balance(root) == -2) {
+
+            if (get_balance(root->right) <= 0) {
+                root = left_rotate(root);
+            } else {
+                root->right = right_rotate(root->right);
+                root = left_rotate(root);
+            }
+
+        }
+
+    } else {
+
+        if (root->right != NULL) {
+
+            temp = root->right;
+
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+
+            root->key = temp->key;
+            root->right = delete(temp->key, root->right, compare_fn);
+
+            if (get_balance(root) == 2) {
+
+                if (get_balance(root->left) >= 0) {
+                    root = right_rotate(root);
+                } else {
+                    root->left = left_rotate(root->left);
+                    root = right_rotate(root);
+                }
+
+            }
+
+        } else {
+            return root->left;
+        }
+
+    }
+
+    root->height = get_height(root);
+
+    return root;
+
+
+}
+
+void pre_order (avl_node *node, unsigned int node_type) {
+
+    if (node != NULL) {
+
+        switch (node_type) {
+            case NODE_TYPE_LEFT:
+                printf("/ ");
+                break;
+            case NODE_TYPE_RIGHT:
+                printf("\\ ");
+                break;
+            default:
+                break;
+        }
+        
+        printf("%p (height %d)\r\n", node->key, node->height);
+
+        pre_order(node->left, NODE_TYPE_LEFT);
+        pre_order(node->right, NODE_TYPE_RIGHT);
+
+    }
+
+}
+
+void destroy_tree (avl_node *root)
 {
 
-    if (root_node != NULL) {
-        destroy_tree(root_node->left);
-        destroy_tree(root_node->right);
-        free(root_node);
+    if (root != NULL) {
+        destroy_tree(root->left);
+        destroy_tree(root->right);
+        free(root);
     }
+
+}
+
+int compare_nodes (
+    avl_node *node_a, 
+    avl_node *node_b, 
+    int (*compare_fn)(avl_node *node_a, avl_node *node_b)
+) {
+
+    return compare_fn(node_a, node_b);
 
 }

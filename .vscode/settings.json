@@ -1,5 +1,16 @@
 {
     "files.associations": {
-        "glfw3.h": "c"
+        "glfw3.h": "c",
+        "cstdlib": "c",
+        "*.tcc": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "constants.h": "c",
+        "chrono": "c",
+        "format": "c",
+        "ostream": "c"
     }
 }

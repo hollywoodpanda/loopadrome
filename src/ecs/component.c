@@ -3,15 +3,15 @@
 
 #include "component.h"
 
-Component *ecs_create_component (char *name, void *data) 
+ecs_component *ecs_create_component (char *name, void *data) 
 {
-    Component *component = malloc(sizeof(Component));
+    ecs_component *component = malloc(sizeof(ecs_component));
     component->name = name;
     component->data = data;
     return component;
 }
 
-void ecs_free_component (Component *component)
+void ecs_free_component (ecs_component *component)
 {
     // Freeing the data is the responsability
     // of the user of the library, not the library itself.

@@ -1,29 +1,33 @@
 #ifndef GAME_AVL_TREE_H
 #define GAME_AVL_TREE_H
 
-typedef struct Node {
-    int key;
-    struct Node *left;
-    struct Node *right;
+typedef struct avl_node {
+    void *key;
+    struct avl_node *left;
+    struct avl_node *right;
     int height;
-} Node;
+} avl_node;
 
-int get_height (Node *node);
+int get_height (avl_node *node);
 
-Node *create_node (int key);
+avl_node *create_node (void *key);
 
 int max (int some_depth, int other_depth);
 
-int get_balance (Node *node);
+int get_balance (avl_node *node);
 
-Node *right_rotate (Node *node);
+avl_node *right_rotate (avl_node *node); 
 
-Node *left_rotate (Node *node);
+avl_node *left_rotate (avl_node *node);
 
-Node *insert (int key, Node *node);
+avl_node *insert (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b));
 
-void pre_order (Node *root_node);
+avl_node *delete (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b));
 
-void destroy_tree (Node *root_node);
+void pre_order (avl_node *root_node, unsigned int node_type);
+
+void destroy_tree (avl_node *root);
+
+int compare_nodes (avl_node *node_a, avl_node *node_b, int (*compare_fn)(avl_node *node_a, avl_node *node_b));
 
 #endif
