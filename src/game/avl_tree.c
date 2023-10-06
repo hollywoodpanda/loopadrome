@@ -95,38 +95,51 @@ avl_node *left_rotate (avl_node *node)
 avl_node *insert (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b)) {
 
     if (root == NULL) {
-        return create_node(key);
-    }
-    
-    if (compare_fn(key, root->key) == -1) {
-        root->left = insert(key, root->left, compare_fn);
+        
+        root = create_node(key);
+
     } else if (compare_fn(key, root->key) == 1) {
+
         root->right = insert(key, root->right, compare_fn);
+
+        if (get_balance(root) == -2) {
+
+            if (compare_fn(key, root->right->key) == 1) {
+
+                root = left_rotate(root);
+
+            } else {
+
+                root->right = right_rotate(root->right);
+                root = left_rotate(root);
+
+
+            }
+
+        }
+
     } else {
-        return root;
+
+        root->left = insert(key, root->left, compare_fn);
+
+        if (get_balance(root) == 2) {
+
+            if (compare_fn(key, root->left->key) == -1) {
+
+                root = right_rotate(root);
+
+            } else {
+
+                root->left = left_rotate(root->left);
+                root = right_rotate(root);
+
+            }
+
+        }
+
     }
 
-    root->height = 1 + max(get_height(root->left), get_height(root->right));
-    
-    int balance = get_balance(root);
-
-    if (balance > 1 && compare_fn(key, root->left->key) == -1) {
-        return right_rotate(root);
-    }
-
-    if (balance < -1 && compare_fn(key, root->right->key) == 1) {
-        return left_rotate(root);
-    }
-
-    if (balance > 1 && compare_fn(key, root->left->key) == 1) {
-        root->left = left_rotate(root->left);
-        return right_rotate(root);
-    }
-
-    if (balance < -1 && compare_fn(key, root->right->key) == -1) {
-        root->right = right_rotate(root->right);
-        return left_rotate(root);
-    }
+    root->height = get_height(root);
 
     return root;
 
@@ -156,6 +169,8 @@ avl_node *delete (void *key, avl_node *root, int (*compare_fn)(void *value_a, vo
         }
 
     } else if (compare_fn(key, root->key) == -1) {
+
+        root->left = delete(key, root->left, compare_fn);
 
         if (get_balance(root) == -2) {
 
@@ -205,6 +220,26 @@ avl_node *delete (void *key, avl_node *root, int (*compare_fn)(void *value_a, vo
 
 }
 
+avl_node *find (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b)) {
+
+    if (root == NULL) {
+        return NULL;
+    }
+    
+    if (compare_fn(key, root->key) == 1) {
+
+        return find(key, root->right, compare_fn);
+
+    } else if (compare_fn(key, root->key) == -1) {
+
+        return find(key, root->left, compare_fn);
+
+    }
+
+    return root;
+ 
+}
+
 void pre_order (avl_node *node, unsigned int node_type) {
 
     if (node != NULL) {
@@ -237,15 +272,5 @@ void destroy_tree (avl_node *root)
         destroy_tree(root->right);
         free(root);
     }
-
-}
-
-int compare_nodes (
-    avl_node *node_a, 
-    avl_node *node_b, 
-    int (*compare_fn)(avl_node *node_a, avl_node *node_b)
-) {
-
-    return compare_fn(node_a, node_b);
 
 }

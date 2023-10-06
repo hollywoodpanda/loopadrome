@@ -24,10 +24,10 @@ avl_node *insert (void *key, avl_node *root, int (*compare_fn)(void *value_a, vo
 
 avl_node *delete (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b));
 
+avl_node *find (void *key, avl_node *root, int (*compare_fn)(void *value_a, void *value_b));
+
 void pre_order (avl_node *root_node, unsigned int node_type);
 
 void destroy_tree (avl_node *root);
-
-int compare_nodes (avl_node *node_a, avl_node *node_b, int (*compare_fn)(avl_node *node_a, avl_node *node_b));
 
 #endif
