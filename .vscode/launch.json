@@ -13,17 +13,17 @@
             "linux": {
                 "MIMode": "gdb",
                 "miDebuggerPath": "gdb",
-                "program": "${workspaceFolder}/output/main"
+                "program": "${workspaceFolder}/output/loopadrome"
             },
             "osx": {
                 "MIMode": "lldb",
                 "miDebuggerPath": "lldb-mi",
-                "program": "${workspaceFolder}/output/main"
+                "program": "${workspaceFolder}/output/loopadrome"
             },
             "windows": {
                 "MIMode": "gdb",
                 "miDebuggerPath": "gdb.exe",
-                "program": "${workspaceFolder}/output/main.exe"
+                "program": "${workspaceFolder}/output/loopadrome.exe"
             },
             "preLaunchTask": "build"
         }

@@ -2,14 +2,14 @@
 
 #include "entity.h"
 
-Entity *ecs_create_entity (int id) 
+ecs_entity *ecs_create_entity (int id) 
 {
-    Entity *entity = malloc(sizeof(Entity));
+    ecs_entity *entity = malloc(sizeof(ecs_entity));
     entity->id = id;
     return entity;
 }
 
-void ecs_free_entity (Entity *entity) 
+void ecs_free_entity (ecs_entity *entity) 
 {
     free(entity);
 }

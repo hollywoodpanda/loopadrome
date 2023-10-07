@@ -8,4 +8,8 @@
 #define OPENGL_INIT_ERROR -1
 #define OPENGL_WINDOW_ERROR -2
 
+#define NODE_TYPE_ROOT 0
+#define NODE_TYPE_LEFT 1
+#define NODE_TYPE_RIGHT -1
+
 #endif
