@@ -55,7 +55,7 @@ void avl_tree_test () {
 
     root = insert(3, root, avl_tree_compare);
 
-    printf("[Loopadrome][AVL_TREE_TEST] root is %p with height %d\r\n", root->key, get_height(root));
+    printf("[Loopadrome][AVL_TREE_TEST] root is %p with height %d\r\n", root->data, get_height(root));
 
     pre_order(root, NODE_TYPE_ROOT);
 
@@ -66,7 +66,7 @@ void avl_tree_test () {
     avl_node *node_found = find(key_to_find, root, avl_tree_compare);
 
     if (node_found != NULL) {
-        printf("[Loopadrome][AVL_TREE_TEST] Node '%d' found! It is %p.\r\n", key_to_find, node_found->key);
+        printf("[Loopadrome][AVL_TREE_TEST] Node '%d' found! It is %p.\r\n", key_to_find, node_found->data);
     } else {
         printf("[Loopadrome][AVL_TREE_TEST] Node '%d' not found\r\n", key_to_find);
     }
@@ -74,7 +74,7 @@ void avl_tree_test () {
     root = delete(3, root, avl_tree_compare);
     root = delete(4, root, avl_tree_compare);
 
-    printf("[Loopadrome][AVL_TREE_TEST] Without some nodes, root is %p with height %d\r\n", root->key, get_height(root));
+    printf("[Loopadrome][AVL_TREE_TEST] Without some nodes, root is %p with height %d\r\n", root->data, get_height(root));
 
     pre_order(root, NODE_TYPE_ROOT);
 
