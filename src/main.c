@@ -11,15 +11,18 @@
 #include "./constants.h"
 
 #include "game/avl_tree.h"
+ 
+void print_init_system_fn  (void) {
+    printf("[Loopadrome][System] Initializing system\r\n");
+} 
 
 void print_system_fn (float delta_time)
 {
     printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
 }
 
-void print_delta_and_message (float delta_time, char *message) {
-    printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
-    printf("[Loopadrome][System] Message is %s\r\n", message);
+void print_system_cool_fn (float delta_time) {
+    printf("[Loopadrome][System] Hey, bro! Delta time is %f\r\n", delta_time);
 }
 
 void window_test () {
@@ -102,17 +105,34 @@ void entity_test () {
 }
 
 void system_test () {
-    ecs_system *system = ecs_create_system(&print_delta_and_message);
 
-    system->execute(4.20f, "Hello ECS World!");
+    ecs_system *system = ecs_create_system(
+        &print_init_system_fn,
+        &print_system_cool_fn
+    );
+
+    if (system->start != NULL) {
+        system->start();
+    }
+
+    system->execute(4.20f);
+    system->execute(4.21f);
 
     ecs_free_system(system);
 
-    ecs_system *simpler_system = ecs_create_system(&print_system_fn);
+    ecs_system *simpler_system = ecs_create_system(
+        &print_init_system_fn,
+        &print_system_fn
+    );
+
+    if (simpler_system->start != NULL) {
+        simpler_system->start();
+    }
 
     simpler_system->execute(5.2f);
 
     ecs_free_system(simpler_system);
+
 }
 
 int main(int argc, char const *argv[]) {
