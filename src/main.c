@@ -1,151 +1,105 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <GLFW/glfw3.h>
 
-#include "opengl/window.h"
-#include "opengl/error.h"
-
+#include "test/raw_testing.h"
 #include "ecs/system.h"
-#include "ecs/entity.h"
 #include "ecs/component.h"
-
-#include "./constants.h"
-
 #include "game/avl_tree.h"
- 
-void print_init_system_fn  (void) {
-    printf("[Loopadrome][System] Initializing system\r\n");
-} 
+#include "demo/dm_window_component.h"
+#include "demo/dm_window_system.h"
+#include "constants.h"
 
-void print_system_fn (float delta_time)
-{
-    printf("[Loopadrome][System] Delta time is %f\r\n", delta_time);
+// TODO: We'll need to adopt other strategy in windows systems: https://stackoverflow.com/questions/2150291/how-do-i-measure-a-time-interval-in-c
+#include <sys/time.h>
+
+void loopadrome_log (char *message) {
+    printf("[LOOPADROME][MAIN] %s\r\n", message);
 }
 
-void print_system_cool_fn (float delta_time) {
-    printf("[Loopadrome][System] Hey, bro! Delta time is %f\r\n", delta_time);
-}
+void test_md_window_system () {
 
-void window_test () {
-    gl_start_default_error_callback();
-    gl_open_window(
+    // 1. Create the component
+    ecs_component *window_component = dm_create_window_component(
         "Loopadrome",
         1024,
-        768
-    );
-}
-
-int avl_tree_compare (int value_a, int value_b) {
-    if (value_a < value_b) {
-        return -1;
-    } else if (value_a > value_b) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-void avl_tree_test () {
-
-    avl_node *root = create_node(5);
-
-    root = insert(2, root, avl_tree_compare);
-
-    root = insert(6, root, avl_tree_compare);
-
-    root = insert(4, root, avl_tree_compare);
-
-    root = insert(1, root, avl_tree_compare);
-
-    root = insert(3, root, avl_tree_compare);
-
-    printf("[Loopadrome][AVL_TREE_TEST] root is %p with height %d\r\n", root->data, get_height(root));
-
-    pre_order(root, NODE_TYPE_ROOT);
-
-    printf("\r\n");
-
-    int key_to_find = 3;
-
-    avl_node *node_found = find(key_to_find, root, avl_tree_compare);
-
-    if (node_found != NULL) {
-        printf("[Loopadrome][AVL_TREE_TEST] Node '%d' found! It is %p.\r\n", key_to_find, node_found->data);
-    } else {
-        printf("[Loopadrome][AVL_TREE_TEST] Node '%d' not found\r\n", key_to_find);
-    }
-
-    root = delete(3, root, avl_tree_compare);
-    root = delete(4, root, avl_tree_compare);
-
-    printf("[Loopadrome][AVL_TREE_TEST] Without some nodes, root is %p with height %d\r\n", root->data, get_height(root));
-
-    pre_order(root, NODE_TYPE_ROOT);
-
-    printf("\r\n");
-
-    destroy_tree(root);
-
-}
-
-void component_test () {
-    ecs_component *component = ecs_create_component("Cool Component", "Value");
-
-    printf("[Loopadrome][Component] Component name is %s\r\n", component->name);
-    printf("[Loopadrome][Component] Component data is %s\r\n", (char*) component->data);
-
-    ecs_free_component(component);
-}
-
-void entity_test () {
-    ecs_entity *entity = ecs_create_entity(1);
-
-    printf("[Loopadrome][Entity] Entity id is %d\r\n", entity->id);
-
-    ecs_free_entity(entity);
-}
-
-void system_test () {
-
-    ecs_system *system = ecs_create_system(
-        &print_init_system_fn,
-        &print_system_cool_fn
+        768,
+        FALSE
     );
 
-    if (system->start != NULL) {
-        system->start();
+    if (window_component->data == NULL) {
+        printf("[Loopadrome][Main] Window component is NULL\r\n");
+        return;
     }
 
-    system->execute(4.20f);
-    system->execute(4.21f);
+    // 2. The components tree
+    loopadrome_log("Creating the components tree");
+    avl_node *component_root_node = create_node(window_component);
 
-    ecs_free_system(system);
-
-    ecs_system *simpler_system = ecs_create_system(
-        &print_init_system_fn,
-        &print_system_fn
-    );
-
-    if (simpler_system->start != NULL) {
-        simpler_system->start();
+    if (component_root_node == NULL) {
+        printf("[Loopadrome][Main] Component root node is NULL\r\n");
+        return;
     }
 
-    simpler_system->execute(5.2f);
+    // 3. Create the system
+    loopadrome_log("Creating the system");
+    ecs_system *window_system = dm_create_window_system(component_root_node);
 
-    ecs_free_system(simpler_system);
+    if (window_system == NULL) { // TODO: useless validation
+        printf("[Loopadrome][Main] Window system is NULL\r\n");
+        return;
+    }
+
+    float delta_time = 0.0f;
+
+    GLFWwindow *window = ((gl_window*) window_component->data)->instance;
+
+    // 4. Execute the system
+    loopadrome_log("Executing the system");
+    do {
+
+        struct timeval start, end;
+        
+        gettimeofday(&start, NULL);
+
+        if (window_system == NULL) {
+            printf("[Loopadrome][Main] Window system is NULL\r\n");
+            break;
+        }
+
+        if(window_system->execute == NULL) {
+            printf("[Loopadrome][Main] Window system execute function is NULL\r\n");
+            break;
+        }
+
+        printf("[LOOPADROME][MAIN] Calling the system's execute function with delta time %f\r\n", delta_time);
+        window_system->execute(delta_time);
+
+        gettimeofday(&end, NULL);
+
+        delta_time += (end.tv_sec - start.tv_sec) * 1000.0f;
+
+    } while (glfwWindowShouldClose(window) == 0);
+
+    loopadrome_log("Destroying the system");
+    glfwTerminate();
+    dm_destroy_window_system(window_system);
 
 }
-
+ 
 int main(int argc, char const *argv[]) {
 
     printf("[Loopadrome][Main] argc %d\r\n", argc);
     printf("[Loopadrome][Main] argv %s\r\n", argv[0]);
 
-    system_test();
-    entity_test();
-    component_test();
+    // system_test();
+    // entity_test();
+    // component_test();
 
-    avl_tree_test();
+    // avl_tree_test();
 
-    window_test();
+    // window_test();
+
+    test_md_window_system();
 
 }

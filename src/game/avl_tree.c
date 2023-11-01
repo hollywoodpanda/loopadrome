@@ -220,7 +220,11 @@ avl_node *delete (void *data, avl_node *root, int (*compare_fn)(void *value_a, v
 
 }
 
-avl_node *find (void *data, avl_node *root, int (*compare_fn)(void *value_a, void *value_b)) {
+avl_node *find (
+    void *data, 
+    avl_node *root, 
+    int (*compare_fn)(void *value_a, void *value_b)
+) {
 
     if (root == NULL) {
         return NULL;
