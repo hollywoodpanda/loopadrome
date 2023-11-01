@@ -58,9 +58,9 @@ void test_md_window_system () {
     loopadrome_log("Executing the system");
     do {
 
-        struct timeval start, end;
+        struct timeval start_time, end_time;
         
-        gettimeofday(&start, NULL);
+        gettimeofday(&start_time, NULL);
 
         if (window_system == NULL) {
             printf("[Loopadrome][Main] Window system is NULL\r\n");
@@ -75,9 +75,9 @@ void test_md_window_system () {
         printf("[LOOPADROME][MAIN] Calling the system's execute function with delta time %f\r\n", delta_time);
         window_system->execute(delta_time);
 
-        gettimeofday(&end, NULL);
+        gettimeofday(&end_time, NULL);
 
-        delta_time += (end.tv_sec - start.tv_sec) * 1000.0f;
+        delta_time += (end_time.tv_sec - start_time.tv_sec) * 1000000 + (end_time.tv_usec - start_time.tv_usec);
 
     } while (glfwWindowShouldClose(window) == 0);
 
