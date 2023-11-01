@@ -11,6 +11,13 @@
         "constants.h": "c",
         "chrono": "c",
         "format": "c",
-        "ostream": "c"
+        "ostream": "c",
+        "stdlib.h": "c",
+        "window.h": "c",
+        "dm_window_system.h": "c",
+        "dm_window_component.h": "c",
+        "entity.h": "c",
+        "component.h": "c",
+        "avl_tree.h": "c"
     }
 }
