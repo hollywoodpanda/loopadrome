@@ -7,29 +7,43 @@
 
 avl_node *dm_components_global = NULL;
 
-int dm_window_component_compare (char *value_a, char *value_b) {
-    return strcmp(value_a, value_b);
+int dm_window_component_compare (char *value_a, ecs_component *value_b) {
+    return strcmp(value_a, value_b->name);
+}
+
+void dm_window_system_start (void) {
+
+    printf("[LOOPADROME][DM_WINDOW_SYSTEM] Starting the system\r\n");
+
 }
 
 void dm_window_system_execute (float delta_time) {
+
+    printf("[LOOPADROME][DM_WINDOW_SYSTEM] Executing the system\r\n");
 
     if (!dm_components_global) {
         printf("[LOOPADROME][DM_WINDOW_SYSTEM] Components are NULL\r\n");
         return;
     }
 
-    ecs_component *window_component = find(
-        dm_components_global, 
+    printf("[LOOPADROME][DM_WINDOW_SYSTEM] Finding the window component\r\n");
+    avl_node *window_component_node = find(
         DM_WINDOW_COMPONENT_NAME,
+        dm_components_global,
         dm_window_component_compare
     );
 
-    if (!window_component) {
-        printf("[LOOPADROME][DM_WINDOW_SYSTEM] Window component is NULL\r\n");
+    ecs_component *window_component = (ecs_component*) window_component_node->data;
+
+    printf("[LOOPADROME][DM_WINDOW_SYSTEM] Getting the window data\r\n");
+    gl_window *window = (gl_window*) window_component->data;
+
+    if (window == NULL) {
+        printf("[LOOPADROME][DM_WINDOW_SYSTEM] Window is NULL\r\n");
         return;
     }
 
-    gl_window *window = (gl_window*) window_component->data;
+    printf("[LOOPADROME][DM_WINDOW_SYSTEM] Calling the window's game loop\r\n");
     window->game_loop(delta_time);
 
 }
@@ -41,9 +55,11 @@ ecs_system *dm_create_window_system(
     dm_components_global = dm_components;
 
     ecs_system *dm_window_system = ecs_create_system(
-        NULL,
+        &dm_window_system_start,
         &dm_window_system_execute
     );
+
+    return dm_window_system;
 
 }
 
@@ -57,8 +73,8 @@ void dm_destroy_window_system (ecs_system *system) {
         if (dm_components_global) {
 
             ecs_component *window_component = find(
-                dm_components_global, 
                 DM_WINDOW_COMPONENT_NAME,
+                dm_components_global, 
                 dm_window_component_compare
             );
 

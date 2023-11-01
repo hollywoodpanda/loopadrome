@@ -2,30 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
+            "name": "Debug MacOS (lldb)",
             "type": "cppdbg",
             "request": "launch",
+            "program": "${workspaceFolder}/output/loopadrome",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/output",
             "environment": [],
             "externalConsole": false,
-            "linux": {
-                "MIMode": "gdb",
-                "miDebuggerPath": "gdb",
-                "program": "${workspaceFolder}/output/loopadrome"
-            },
-            "osx": {
-                "MIMode": "lldb",
-                "miDebuggerPath": "lldb-mi",
-                "program": "${workspaceFolder}/output/loopadrome"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "miDebuggerPath": "gdb.exe",
-                "program": "${workspaceFolder}/output/loopadrome.exe"
-            },
-            "preLaunchTask": "build"
+            "MIMode": "lldb"
         }
     ]
 }

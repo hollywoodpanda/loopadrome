@@ -10,8 +10,12 @@
 #include "demo/dm_window_system.h"
 #include "constants.h"
 
-// TODO: We should adopt other strategy in windows systems: https://stackoverflow.com/questions/2150291/how-do-i-measure-a-time-interval-in-c
+// TODO: We'll need to adopt other strategy in windows systems: https://stackoverflow.com/questions/2150291/how-do-i-measure-a-time-interval-in-c
 #include <sys/time.h>
+
+void loopadrome_log (char *message) {
+    printf("[LOOPADROME][MAIN] %s\r\n", message);
+}
 
 void test_md_window_system () {
 
@@ -23,12 +27,13 @@ void test_md_window_system () {
         FALSE
     );
 
-    if (window_component == NULL) {
+    if (window_component->data == NULL) {
         printf("[Loopadrome][Main] Window component is NULL\r\n");
         return;
     }
 
     // 2. The components tree
+    loopadrome_log("Creating the components tree");
     avl_node *component_root_node = create_node(window_component);
 
     if (component_root_node == NULL) {
@@ -37,31 +42,48 @@ void test_md_window_system () {
     }
 
     // 3. Create the system
+    loopadrome_log("Creating the system");
     ecs_system *window_system = dm_create_window_system(component_root_node);
 
-    if (window_system == NULL) {
+    if (window_system == NULL) { // TODO: useless validation
         printf("[Loopadrome][Main] Window system is NULL\r\n");
         return;
     }
 
     float delta_time = 0.0f;
 
+    GLFWwindow *window = ((gl_window*) window_component->data)->instance;
+
     // 4. Execute the system
+    loopadrome_log("Executing the system");
     do {
 
         struct timeval start, end;
         
         gettimeofday(&start, NULL);
 
+        if (window_system == NULL) {
+            printf("[Loopadrome][Main] Window system is NULL\r\n");
+            break;
+        }
+
+        if(window_system->execute == NULL) {
+            printf("[Loopadrome][Main] Window system execute function is NULL\r\n");
+            break;
+        }
+
+        printf("[LOOPADROME][MAIN] Calling the system's execute function with delta time %f\r\n", delta_time);
         window_system->execute(delta_time);
 
         gettimeofday(&end, NULL);
 
-        delta_time = (end.tv_sec - start.tv_sec) * 1000.0f;
+        delta_time += (end.tv_sec - start.tv_sec) * 1000.0f;
 
-    } while (glfwWindowShouldClose(window_component->data) == 0);
+    } while (glfwWindowShouldClose(window) == 0);
 
+    loopadrome_log("Destroying the system");
     glfwTerminate();
+    dm_destroy_window_system(window_system);
 
 }
  
