@@ -4,7 +4,7 @@
 #define DM_WINDOW_COMPONENT_NAME "dm_window_component"
 
 #include "../ecs/component.h"
-#include "../opengl/window.h"
+#include "../opengl/gl_window.h"
 
 ecs_component *dm_create_window_component (
     char *window_title,

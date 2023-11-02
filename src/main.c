@@ -77,7 +77,7 @@ void test_md_window_system () {
 
         gettimeofday(&end_time, NULL);
 
-        delta_time += (end_time.tv_sec - start_time.tv_sec) * 1000000 + (end_time.tv_usec - start_time.tv_usec);
+        delta_time += (end_time.tv_sec - start_time.tv_sec) * 1000000 + (end_time.tv_usec - start_time.tv_usec) / 60; // Considering 60 fps
 
     } while (glfwWindowShouldClose(window) == 0);
 
@@ -97,8 +97,6 @@ int main(int argc, char const *argv[]) {
     // component_test();
 
     // avl_tree_test();
-
-    // window_test();
 
     test_md_window_system();
 

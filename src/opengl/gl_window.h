@@ -1,14 +1,16 @@
 #ifndef OPENGL_WINDOW_H
 #define OPENGL_WINDOW_H
 
-#ifndef _glfw3_h_
-    #include <GLFW/glfw3.h>
-#endif
+#include <GLFW/glfw3.h>
 
-#include "../constants.h"
-
+/**
+ * @brief The game loop function.
+*/
 typedef void (*gl_window_loop_function)(float delta_time);
 
+/**
+ * @brief The window structure.
+*/
 typedef struct gl_window {
     char *title;
     GLFWwindow *instance;
@@ -18,9 +20,6 @@ typedef struct gl_window {
     int is_resizable;
     gl_window_loop_function game_loop;
 } gl_window;
-
-/** @deprecated */
-int gl_open_window ();
 
 gl_window *gl_create_window (
     char *title,
