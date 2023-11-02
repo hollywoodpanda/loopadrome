@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../opengl/window.h"
 #include "../opengl/error.h"
 
 #include "../ecs/system.h"
@@ -23,15 +22,6 @@ void print_system_fn (float delta_time)
 
 void print_system_cool_fn (float delta_time) {
     printf("[Loopadrome][System] Hey, bro! Delta time is %f\r\n", delta_time);
-}
-
-void window_test () {
-    gl_start_default_error_callback();
-    gl_open_window(
-        "Loopadrome",
-        1024,
-        768
-    );
 }
 
 int avl_tree_compare (int value_a, int value_b) {

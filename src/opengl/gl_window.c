@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifndef _glfw3_h_
-    #include <GLFW/glfw3.h>
-#endif
-
-#include "window.h"
+#include "gl_window.h"
 #include "error.h"
 #include "../constants.h"
 
@@ -16,7 +12,8 @@ void gl_start_hints () {
     #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
-        
+
+    // FIXME: Resizing freezes the game loop 👀
     glfwWindowHint(GLFW_RESIZABLE, TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
@@ -82,49 +79,5 @@ gl_window *gl_create_window (
     gl_window_instance->game_loop = game_loop;
 
     return gl_window_instance;
-
-}
-
-int gl_open_window (
-    char* window_title,
-    int window_width,
-    int window_height
-) {
-
-    // TODO: configure the error callback: https://www.glfw.org/docs/latest/quick_guide.html
-    
-    if (!glfwInit()) {
-        fprintf(stderr, "Failed to initialize GLFW");
-        return OPENGL_INIT_ERROR;
-    }
-
-    gl_start_hints();
-
-    GLFWwindow *window = glfwCreateWindow(
-        window_width, 
-        window_height, 
-        window_title, 
-        NULL, 
-        NULL
-    );
-
-    if (window == NULL) {
-        fprintf(stderr, "Failed to open GLFW window");
-        glfwTerminate();
-        return OPENGL_WINDOW_ERROR;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-    do {
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    } while (glfwWindowShouldClose(window) == 0);
-
-    glfwTerminate();
-
-    return OPENGL_SUCCESS;
 
 }
