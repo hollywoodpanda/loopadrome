@@ -76,7 +76,7 @@ void eng_update_systems (eng_context* ctx, float delta_time)
         ecs_system* system = list_get(i, ctx->systems);
         if (system->active)
         {
-            system->execute(delta_time);
+            system->execute(ctx, delta_time);
         }
     }
 }

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "./system.h"
+#include "system.h"
 
 ecs_system *ecs_create_system (
     char* name,
