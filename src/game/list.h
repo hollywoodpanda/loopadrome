@@ -1,11 +1,10 @@
 #ifndef GAME_LIST_H
 #define GAME_LIST_H
 
-#define INITIAL_CAPACITY 10
+#define INITIAL_CAPACITY 1
+#define CAPACITY_GROWTH_FACTOR 1.5f
 
 #include <stdlib.h>
-
-
 
 typedef struct list {
     void** data;

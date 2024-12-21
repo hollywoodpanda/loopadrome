@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include "list.h"
 
+static inline int float_to_int (float value)
+{
+    return value >= 0 ? (int)(value + 0.5f) : (int)(value - 0.5f);
+}
+
 list* list_create (void)
 {
     list* list = (struct list*) malloc(sizeof(struct list));
@@ -22,8 +27,16 @@ void list_add (void* data, list* list)
 {
     if (list->size == list->capacity)
     {
-        list->capacity *= 2;
-        list->data = (void**) realloc(list->data, sizeof(void*) * list->capacity);
+        printf("[Loopadrome][List] Resizing list with capacity %ld\r\n", list->capacity);
+        list->capacity = float_to_int(list->capacity * CAPACITY_GROWTH_FACTOR);
+        printf("[Loopadrome][List] New capacity: %ld\r\n", list->capacity);
+        void** temp_data = (void**) realloc(list->data, sizeof(void*) * list->capacity);
+        if (temp_data == NULL)
+        {
+            printf("[Loopadrome][List] Failed to reallocate memory for list\r\n");
+            return;
+        }
+        list->data = temp_data;
     }
 
     list->data[list->size++] = data;

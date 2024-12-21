@@ -2,6 +2,10 @@
 #include <stdbool.h>
 #include "game/engine.h"
 
+#define WINDOW_ENTITY 1
+#define SIZE_COMPONENT "size"
+#define TITLE_COMPONENT "title"
+
 typedef struct comp_size
 {
     int width;
@@ -13,7 +17,7 @@ bool already_iterated = false;
 
 bool shutdown_game_engine (void)
 {
-    if (iterations < 100)
+    if (iterations < 10)
     {
         iterations++;
         return false;
@@ -27,16 +31,55 @@ void start_window_system (void)
     printf("[Loopadrome][System] Starting window system\r\n");
 }
 
-void update_window_system (float delta_time)
+void update_window_system (eng_context* ctx, float delta_time)
 {
-    printf("[Loopadrome][System] Updating window system with delta time %.10f\r\n", delta_time);
+
+    if (ctx == NULL)
+    {
+        return;
+    }
+
+    list* found_size_comps = eng_find_components(ctx, SIZE_COMPONENT);
+
+    if (found_size_comps != NULL)
+    {
+        for (size_t i = 0; i < found_size_comps->size; i++)
+        {
+            ecs_component* comp = list_get(i, found_size_comps);
+            printf("[Loopadrome][System] Found window_size component in list: (w:%d,h:%d)\r\n", ((comp_size*)comp->data)->width, ((comp_size*)comp->data)->height);
+        }
+    }
+
+    list* found_title_comps = eng_find_components(ctx, TITLE_COMPONENT);
+
+    if (found_title_comps != NULL)
+    {
+        for (size_t i = 0; i < found_title_comps->size; i++)
+        {
+            ecs_component* comp = list_get(i, found_title_comps);
+            printf("[Loopadrome][System] Found window_title component in list: \"%s\"\r\n", (char*)comp->data);
+        }
+    }
+
+    ecs_entity* window_entity = eng_find_entity(ctx, WINDOW_ENTITY);
+
+    if (window_entity != NULL)
+    {
+        printf("[Loopadrome][System] Found window entity %d with %ld components in it\r\n", window_entity->id, window_entity->components->size);
+    }
+
+    printf("[Loopadrome][System] My wife is so dumb that delta_time %.10f is greater than her IQ!\r\n", delta_time);
 }
 
 int main(int argc, char const *argv[]) 
 {
+    printf("[Loopadrome][Main] Starting main\r\n");
 
-    printf("[Loopadrome][Main] argc %d\r\n", argc);
-    printf("[Loopadrome][Main] argv %s\r\n", argv[0]);
+    size_t argc_size = (size_t) argc;
+    for (size_t i = 0; i < argc_size; i++)
+    {
+        printf("[Loopadrome][Main] argv[%ld] %s\r\n", i, argv[i]);
+    }
 
     eng_context* ctx = eng_create_context(&shutdown_game_engine);
 
@@ -44,32 +87,25 @@ int main(int argc, char const *argv[])
     size->width = 800;
     size->height = 600;
 
-    ecs_component* window_size = ecs_create_component("window_size", size);
+    ecs_component* window_size_component = ecs_create_component(SIZE_COMPONENT, size);
+    ecs_component* window_title_component = ecs_create_component(TITLE_COMPONENT, "Loopadrome");
 
-    printf("[Loopadrome][Main] Window %d width and %d height\r\n", ((comp_size*)window_size->data)->width, ((comp_size*)window_size->data)->height);
+    printf("[Loopadrome][Main] Window %d width and %d height\r\n", ((comp_size*)window_size_component->data)->width, ((comp_size*)window_size_component->data)->height);
+    printf("[Loopadrome][Main] Window title %s\r\n", (char*)window_title_component->data);
 
-    ecs_entity* window = ecs_create_entity(1);
-    printf("[Loopadrome][Main] Window entity id %d\r\n", window->id);
-    ecs_add_component(window, window_size);
-    printf("[Loopadrome][Main] Window entity components %d\r\n", window->components->size);
+    ecs_entity* window_entity = ecs_create_entity(WINDOW_ENTITY);
+    printf("[Loopadrome][Main] Window entity id %d\r\n", window_entity->id);
+    ecs_add_component(window_entity, window_size_component);
+    ecs_add_component(window_entity, window_title_component);
+    printf("[Loopadrome][Main] Window entity components %ld\r\n", window_entity->components->size);
 
-    eng_add_entity(ctx, window);
-    printf("[Loopadrome][Main] Entities %d\r\n", ctx->entities->size);
+    eng_add_entity(ctx, window_entity);
+    printf("[Loopadrome][Main] Entities %ld\r\n", ctx->entities->size);
 
-    eng_add_system(ctx, ecs_create_system("window", &start_window_system, &update_window_system, true));
-    printf("[Loopadrome][Main] Systems %d\r\n", ctx->systems->size);
+    ecs_system* window_system = ecs_create_system("window_system", &start_window_system, &update_window_system, true);
 
-    ecs_component* found_size_comp = eng_find_component(window, "window_size");
-
-    list* found_size_comps = eng_find_components(ctx, "window_size");
-
-    for (size_t i = 0; i < found_size_comps->size; i++)
-    {
-        ecs_component* comp = list_get(i, found_size_comps);
-        printf("[Loopadrome][Main] Found component in list %d,%d\r\n", ((comp_size*)comp->data)->width, ((comp_size*)comp->data)->height);
-    }
-
-    printf("[Loopadrome][Main] Starting engine %d,%d\r\n", ((comp_size*)found_size_comp->data)->width, ((comp_size*)found_size_comp->data)->height);
+    eng_add_system(ctx, window_system);
+    printf("[Loopadrome][Main] Systems %ld\r\n", ctx->systems->size);
 
     eng_start(ctx);
     eng_run(ctx);
