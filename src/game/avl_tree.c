@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "./avl_tree.h"
+#include "avl_tree.h"
 #include "../constants.h"
 
 int get_height (avl_node *node)

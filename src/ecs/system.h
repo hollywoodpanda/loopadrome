@@ -2,7 +2,7 @@
 #define ECS_SYSTEM_H
 
 #include <stdbool.h>
-#include "./entity.h"
+#include "entity.h"
 
 typedef struct eng_context eng_context; // Forward declaration
 
