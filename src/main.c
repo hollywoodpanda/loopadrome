@@ -59,7 +59,21 @@ int main(int argc, char const *argv[])
     eng_add_system(ctx, ecs_create_system("window", &start_window_system, &update_window_system, true));
     printf("[Loopadrome][Main] Systems %d\r\n", ctx->systems->size);
 
+    ecs_component* found_size_comp = eng_find_component(window, "window_size");
+
+    list* found_size_comps = eng_find_components(ctx, "window_size");
+
+    for (size_t i = 0; i < found_size_comps->size; i++)
+    {
+        ecs_component* comp = list_get(i, found_size_comps);
+        printf("[Loopadrome][Main] Found component in list %d,%d\r\n", ((comp_size*)comp->data)->width, ((comp_size*)comp->data)->height);
+    }
+
+    printf("[Loopadrome][Main] Starting engine %d,%d\r\n", ((comp_size*)found_size_comp->data)->width, ((comp_size*)found_size_comp->data)->height);
+
     eng_start(ctx);
     eng_run(ctx);
+
+    eng_destroy_context(ctx);
 
 }
