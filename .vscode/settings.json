@@ -18,6 +18,12 @@
         "dm_window_component.h": "c",
         "entity.h": "c",
         "component.h": "c",
-        "avl_tree.h": "c"
+        "avl_tree.h": "c",
+        "__bit_reference": "c",
+        "algorithm": "c",
+        "raw_testing.h": "c",
+        "list.h": "c",
+        "engine_data.h": "c",
+        "engine.h": "c"
     }
 }

@@ -1,0 +1,93 @@
+#define _POSIX_C_SOURCE 199309L
+
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
+#include "engine.h"
+#include "list.h"
+
+int compare_systems (ecs_system* system_a, ecs_system* system_b)
+{
+    return strcmp(system_a->name, system_b->name);
+}
+
+int compare_entities (ecs_entity* entity_a, ecs_entity* entity_b)
+{
+    return entity_a->id == entity_b->id;
+}
+
+void init_engine (void)
+{
+    systems = list_create();
+    entities = list_create();
+}
+
+void eng_configure_shutdown (eng_shutdown_fn fn)
+{
+    should_shutdown = fn;
+}
+
+void eng_add_system (ecs_system* system)
+{
+    list_add(system, systems);
+}
+
+void eng_update_systems (float delta_time)
+{
+    size_t i;
+    for (i = 0; i < systems->size; i++)
+    {
+        ecs_system* system = list_get(i, systems);
+        if (system->active && system->execute != NULL)
+        {
+            system->execute(delta_time);
+        }
+    }
+}
+
+void eng_add_entity (ecs_entity* entity)
+{
+    list_add(entity, entities);
+}
+
+void eng_remove_entity (ecs_entity* entity)
+{
+    list_remove(entity, entities, (int (*)(void*, void*)) &compare_entities);
+}
+
+void eng_activate_system (ecs_system* system)
+{
+    system->active = true;
+}
+
+void eng_deactivate_system (ecs_system* system)
+{
+    system->active = false;
+}
+
+void eng_remove_system (ecs_system* system)
+{
+    list_remove(system, systems, (int (*)(void*, void*)) &compare_systems);
+}
+
+void eng_run (void)
+{
+    struct timespec last_time, current_time;
+    clock_gettime(CLOCK_MONOTONIC, &last_time);
+
+    if (should_shutdown == NULL)
+    {
+        fprintf(stderr, "No shutdown function configured\r\n");
+        return;
+    }
+
+    while (!should_shutdown())
+    {
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        float delta_time = (current_time.tv_sec - last_time.tv_sec) + 
+                           (current_time.tv_nsec - last_time.tv_nsec) / 1000000000.0f;
+        last_time = current_time;
+
+        eng_update_systems(delta_time);
+    }
+}
