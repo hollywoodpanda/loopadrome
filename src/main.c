@@ -39,6 +39,23 @@ void update_window_system (eng_context* ctx, float delta_time)
         return;
     }
 
+    if (iterations > 5)
+    {
+        ecs_entity* entity = eng_find_entity(ctx, WINDOW_ENTITY);
+
+        if (entity != NULL)
+        {
+
+            ecs_component* component = eng_find_component(entity, TITLE_COMPONENT);
+
+            if (component != NULL)
+            {
+                printf("[Loopadrome][System] Found window title component to remove from entity: \"%s\"\r\n", (char*)component->data);
+                eng_remove_component(entity, component);
+            }
+        }        
+    }
+
     list* found_size_comps = eng_find_components(ctx, SIZE_COMPONENT);
 
     if (found_size_comps != NULL)
@@ -65,7 +82,7 @@ void update_window_system (eng_context* ctx, float delta_time)
 
     if (window_entity != NULL)
     {
-        printf("[Loopadrome][System] Found window entity %d with %ld components in it\r\n", window_entity->id, window_entity->components->size);
+        printf("[Loopadrome][System] Found window entity %d with %ld component(s) in it\r\n", window_entity->id, window_entity->components->size);
     }
 
     printf("[Loopadrome][System] My wife is so dumb that delta_time %.10f is greater than her IQ!\r\n", delta_time);
