@@ -27,9 +27,7 @@ void list_add (void* data, list* list)
 {
     if (list->size == list->capacity)
     {
-        printf("[Loopadrome][List] Resizing list with capacity %ld\r\n", list->capacity);
         list->capacity = float_to_int(list->capacity * CAPACITY_GROWTH_FACTOR);
-        printf("[Loopadrome][List] New capacity: %ld\r\n", list->capacity);
         void** temp_data = (void**) realloc(list->data, sizeof(void*) * list->capacity);
         if (temp_data == NULL)
         {

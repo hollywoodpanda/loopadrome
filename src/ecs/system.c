@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "system.h"
 
@@ -9,7 +8,6 @@ ecs_system *ecs_create_system (
     ecs_system_function execute,
     bool active
 ) {
-    printf("[Loopadrome][System] Creating system\r\n");
     ecs_system *system = malloc(sizeof(ecs_system));
     system->name = name;
     system->start = start;
@@ -20,6 +18,5 @@ ecs_system *ecs_create_system (
 
 void ecs_free_system (ecs_system *system) 
 {
-    printf("[Loopadrome][System] Freeing system\r\n");
     free(system);
 }
