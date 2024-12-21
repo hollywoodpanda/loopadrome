@@ -121,13 +121,12 @@ ecs_entity* eng_find_entity (eng_context* ctx, int id)
 
 void eng_add_component (ecs_entity* entity, ecs_component* component)
 {
-    list_add(component, entity->components);
+    ecs_add_component(entity, component);
 }
 
 void eng_remove_component (ecs_entity* entity, ecs_component* component)
 {
     ecs_remove_component(entity, component);
-    list_remove(component, entity->components, (int (*)(void*, void*)) &compare_components);
 }
 
 ecs_component* eng_find_component (ecs_entity* entity, char* name)
