@@ -60,7 +60,6 @@ gl_window *gl_create_window (
         // so that the caller can handle the error
         return NULL;
     }
-
     // 6. Making the window's context current
     glfwMakeContextCurrent(window);
 
@@ -68,7 +67,7 @@ gl_window *gl_create_window (
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
     // 8. Creating the window object
-    gl_window *gl_window_instance = (gl_window *) malloc(sizeof(gl_window));
+    gl_window* gl_window_instance = (gl_window*) malloc(sizeof(gl_window));
 
     gl_window_instance->title = title;
     gl_window_instance->instance = window;

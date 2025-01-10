@@ -1,5 +1,5 @@
-#ifndef GAME_AVL_TREE_H
-#define GAME_AVL_TREE_H
+#ifndef DATA_AVL_TREE_H
+#define DATA_AVL_TREE_H
 
 typedef struct avl_node {
     void *data;

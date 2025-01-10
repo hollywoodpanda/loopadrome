@@ -2,7 +2,7 @@
 #define ECS_ENTITY_H
 
 #include "component.h"
-#include "../game/list.h"
+#include "../data/list.h"
 
 typedef struct ecs_entity {
     int id;

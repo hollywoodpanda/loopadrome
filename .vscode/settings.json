@@ -24,6 +24,8 @@
         "raw_testing.h": "c",
         "list.h": "c",
         "engine_data.h": "c",
-        "engine.h": "c"
+        "engine.h": "c",
+        "size.h": "c",
+        "string.h": "c"
     }
 }

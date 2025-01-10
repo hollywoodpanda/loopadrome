@@ -6,7 +6,7 @@
 
 typedef struct eng_context eng_context; // Forward declaration
 
-typedef void (*ecs_system_start_function)(void);
+typedef void (*ecs_system_start_function)(eng_context* ctx);
 
 typedef void (*ecs_system_function)(eng_context* ctx, float delta_time);
 
