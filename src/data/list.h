@@ -1,5 +1,5 @@
-#ifndef GAME_LIST_H
-#define GAME_LIST_H
+#ifndef DATA_LIST_H
+#define DATA_LIST_H
 
 #define INITIAL_CAPACITY 10
 #define CAPACITY_GROWTH_FACTOR 1.5f
@@ -12,11 +12,11 @@ typedef struct list {
     size_t capacity;
 } list;
 
-list *list_create (void);
+list* list_create (void);
 void list_destroy (list *list);
 
-void list_add (void *data, list *list);
-void list_remove (void *data, list *list, int (*compare_fn)(void *value_a, void *value_b));
+void list_add (void* data, list* list);
+void list_remove (void* data, list* list, int (*compare_fn)(void* value_a, void* value_b));
 void* list_get (size_t index, list* list);
 
 #endif

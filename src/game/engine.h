@@ -8,10 +8,12 @@
 typedef struct eng_context {
     list* systems;
     list* entities;
-    bool (*eng_shutdown_fn)(void);
+    list* shutdown_functions;
 } eng_context;
 
-eng_context* eng_create_context (bool (*)(void));
+eng_context* eng_create_context (void);
+void eng_add_shutdown_function (eng_context* ctx, bool (*shutdown_fn)(eng_context* ctx));
+void eng_remove_shutdown_function (eng_context* ctx, bool (*shutdown_fn)(eng_context* ctx));
 void eng_destroy_context (eng_context* ctx);
 
 void eng_add_system (eng_context* ctx, ecs_system *system);
