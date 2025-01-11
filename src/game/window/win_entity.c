@@ -18,7 +18,10 @@ void win_create_entity (
 
     ecs_component* window_size_component = ecs_create_component(WINDOW_SIZE_COMPONENT, size);
     ecs_component* window_title_component = ecs_create_component(WINDOW_TITLE_COMPONENT, title);
-    ecs_component* window_fullscreen_component = ecs_create_component(WINDOW_FULLSCREEN_COMPONENT, &is_fullscreen);
+    
+    bool* is_fullscreen_ptr = malloc(sizeof(bool));
+    *is_fullscreen_ptr = is_fullscreen;
+    ecs_component* window_fullscreen_component = ecs_create_component(WINDOW_FULLSCREEN_COMPONENT, is_fullscreen_ptr);
 
     GLFWwindow* window = NULL;
 

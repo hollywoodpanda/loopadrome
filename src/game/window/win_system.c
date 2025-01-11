@@ -78,7 +78,7 @@ void _win_start_system (eng_context* ctx) {
 }
 
 void _win_update_system (eng_context* ctx, float delta_time) {
-
+    
     ecs_entity* window_entity = eng_find_entity(ctx, WINDOW_ENTITY);
 
     if (window_entity == NULL) {
@@ -101,13 +101,13 @@ void _win_update_system (eng_context* ctx, float delta_time) {
     char title_prefix[11];
     strncpy(title_prefix, title, 11);
     title_prefix[11] = '\0';
-    char* new_title[15];
+    char new_title[30];
     sprintf(new_title, "%s%d", title_prefix, title_index);
     win_title_comp->data = new_title;
 
     ecs_component* win_fullscreen_comp = eng_find_component(window_entity, WINDOW_FULLSCREEN_COMPONENT);
 
-    int is_fullscreen = *((int*) win_fullscreen_comp->data);
+    bool is_fullscreen = *((bool*) win_fullscreen_comp->data);
 
     ecs_component* win_instance_comp = eng_find_component(window_entity, WINDOW_INSTANCE_COMPONENT);
 
