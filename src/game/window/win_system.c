@@ -78,7 +78,7 @@ void _win_start_system (eng_context* ctx) {
 }
 
 void _win_update_system (eng_context* ctx, float delta_time) {
-    
+
     ecs_entity* window_entity = eng_find_entity(ctx, WINDOW_ENTITY);
 
     if (window_entity == NULL) {
