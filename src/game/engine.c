@@ -24,7 +24,7 @@ int compare_entities (ecs_entity* entity_a, ecs_entity* entity_b)
 
 int compare_shutdown_functions (bool (*shutdown_fn_a)(void), bool (*shutdown_fn_b)(void))
 {
-    int result = shutdown_fn_a == shutdown_fn_b;
+    int result = shutdown_fn_a == shutdown_fn_b; // FIXME: WTF is this?
 
     if (result > 0) {
         return 1;

@@ -26,6 +26,7 @@
         "engine_data.h": "c",
         "engine.h": "c",
         "size.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "time.h": "c"
     }
 }

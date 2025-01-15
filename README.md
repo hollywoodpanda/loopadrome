@@ -11,15 +11,17 @@ First you need to install [**GLFW**](https://www.glfw.org/docs/3.3/compile.html)
 There are easier ways depending of your OS os distro.
 
 ```shell
-$> make
-$> ./output/loopadrome
+$> cmake .
+$> cmake --build .
+$> ./build/loopadrome
 ```
 
 ### For Windows
 
 ```shell
-$> make
-$> ./output/loopadrome.exe
+$> cmake .
+$> cmake --build .
+$> ./build/loopadrome
 ```
 
 ... or something. Not tested on Windows yet.
